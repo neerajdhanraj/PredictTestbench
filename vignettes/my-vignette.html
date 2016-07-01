@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Neeraj Bokde neerajdhanraj@gmail.com" />
+
+<meta name="date" content="2016-05-12" />
+
+<title>PredictTestbench: Testbench for Comparison of Data Prediction Models</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">PredictTestbench: Testbench for Comparison of Data Prediction Models</h1>
+<h4 class="author"><em>Neeraj Bokde <a href="mailto:neerajdhanraj@gmail.com">neerajdhanraj@gmail.com</a></em></h4>
+<h4 class="date"><em>2016-05-12</em></h4>
+
+
+
+<p>This Document is to introduce the R package ‘PredictTestbench’. It is an testing workbench for comparison of time series data prediction models/methods. It compares prediction methods with reference to RMSE, MAE or MAPE parameters. It allows to add new proposed methods to test bench and to compare with other methods. The function <code>prediction_append()</code> allows to add multiple numbers of methods to the existing methods available in test bench.</p>
+<p>Following example describs the working of this package:</p>
+<p>Consider a sample data <code>datax</code> as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">datax &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">5</span>,<span class="dv">1</span>:<span class="dv">5</span>,<span class="dv">1</span>:<span class="dv">5</span>,<span class="dv">1</span>:<span class="dv">5</span>,<span class="dv">1</span>:<span class="dv">5</span>,<span class="dv">1</span>:<span class="dv">5</span>,<span class="dv">1</span>:<span class="dv">5</span>,<span class="dv">1</span>:<span class="dv">5</span>,<span class="dv">1</span>:<span class="dv">5</span>,<span class="dv">1</span>:<span class="dv">5</span>,<span class="dv">1</span>:<span class="dv">5</span>,<span class="dv">1</span>:<span class="dv">5</span>,<span class="dv">1</span>:<span class="dv">5</span>,<span class="dv">1</span>:<span class="dv">5</span>,<span class="dv">1</span>:<span class="dv">5</span>,<span class="dv">1</span>:<span class="dv">5</span>,<span class="dv">1</span>:<span class="dv">5</span>,<span class="dv">1</span>:<span class="dv">5</span>,<span class="dv">1</span>:<span class="dv">5</span>,<span class="dv">1</span>:<span class="dv">5</span>,<span class="dv">1</span>:<span class="dv">5</span>)</code></pre></div>
+<p>Import library for Package <code>PredictTestbench</code> as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(PredictTestbench)</code></pre></div>
+<p>The function <code>prediction_errors()</code> is used to compare imputing methods with reference to RMSE, MAE or MAPE parameters. Syntax of <code>prediction_errors()</code> as shown below:</p>
+<p><code>prediction_errors(dataIn, nextVal, errorParameter, MethodPath, MethodName)</code></p>
+<p>where,</p>
+<ul>
+<li><code>dataIn</code> is imput time series for testing</li>
+<li><code>nextVal</code> is an integer to decide number of values to predict</li>
+<li><code>errorParameter</code> is type of error calculation (RMSE, MAE or MAPE)</li>
+<li><code>MethodPath</code> is location of function for the proposed imputation method</li>
+<li><code>MethodName</code> is name for function for the proposed imputation method</li>
+</ul>
+<p>At simplest form, function <code>prediction_errors()</code> can we used as:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">q &lt;-<span class="st"> </span><span class="kw">prediction_errors</span>(datax, <span class="dt">nextVal =</span> <span class="dv">10</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" alt /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">q</code></pre></div>
+<pre><code>## $Parameter
+## [1] &quot;RMSE Plot&quot;
+## 
+## $Desired_Prediction
+##  [1] 1 2 3 4 5 1 2 3 4 5
+## 
+## $ARIMA_Method_Prediction
+##  [1] 3 3 3 3 3 3 3 3 3 3
+## 
+## $ARIMA_Method_Error
+## [1] 1.414214
+## 
+## $ARIMA_Execution_Time_in_Seconds
+## [1] 0.472868
+## 
+## $PSF_Method_Prediction
+##  [1] 1 2 3 4 5 1 2 3 4 5
+## 
+## $PSF_Method_Error
+## [1] 0
+## 
+## $PSF_Execution_Time_in_Seconds
+## [1] 28.31927</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot_predictions</span>(q)</code></pre></div>
+<p><img src="data:image/png;base64,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" alt /><!-- --></p>
+<p>By default, this function compares two prediction methods, i.e. ARIMA and PSF <a href="https://cran.r-project.org/package=PSF" class="uri">https://cran.r-project.org/package=PSF</a>. The <code>plot_predictions()</code> function is used to plot the comparison plots between different methods. This testbench allows to add one more data prediction method to compare with already existing methods. The only care is to be takes as, the new imputing method is to be designed in function format such that it could return predicted data as output. Suppose, following function is the desired method to add in testbench.</p>
+<p><code>===============================</code></p>
+<p><code>inter &lt;- function(dataIn)</code></p>
+<p><code>{</code></p>
+<p><code>library(PSF)</code></p>
+<p><code>d &lt;- pred_for_w(dataIn, 4, 3, 10)</code></p>
+<p><code>return(d)</code></p>
+<p><code>}</code></p>
+<p><code>===============================</code></p>
+<p>Save this function in new R script file and save it and note its Source location similar to <code>&quot;source('~/PredictTestbench/R/inter.R')&quot;</code> and use <code>prediction_errors()</code> function as:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#aa &lt;- prediction_errors(dataIn= datax, nextVal = 10, MethodPath = &quot;source('~/PredictTestbench/R/inter.R')&quot;, MethodName = &quot;Proposed_Method&quot;)</span>
+
+<span class="co">#aa</span>
+<span class="co">#plot_predictions(aa)</span></code></pre></div>
+<p>This above code is written in commented format, since this function is dependent on other function and its location, which is not included in this package.</p>
+<p>If user wishes to add more than one imputation methods to test bench, the function <code>prediction_append()</code> is used as:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#bb &lt;- prediction_append(existing_method = aa, dataIn= datax, nextVal = 10, MethodPath = &quot;source('~/imputeTestbench/R/PSFimpute.R')&quot;, MethodName = &quot;PSFimpute&quot;)</span>
+
+<span class="co">#bb</span>
+<span class="co">#plot_predictions(bb)</span></code></pre></div>
+<p>where</p>
+<ul>
+<li><code>existing_method</code> is output obtained from <code>prediction_errors()</code> function</li>
+<li><code>dataIn</code> is imput time series for testing</li>
+<li><code>nextVal</code> is an integer to decide number of values to predict</li>
+<li><code>errorParameter</code> is type of error calculation (RMSE, MAE or MAPE)</li>
+<li><code>MethodPath</code> is location of function for the proposed imputation method</li>
+<li><code>MethodName</code> is name for function for the proposed imputation method</li>
+</ul>
+<p>In similar way, user is allowed to remove unwanted prediction method in testbench, if any. This is done with <code>prediction_remove()</code> function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># cc &lt;- prediction_remove (existing_method = bb, index_number = 1)</span>
+<span class="co"># cc</span>
+<span class="co"># plot_predictions(cc)</span></code></pre></div>
+<p>where</p>
+<ul>
+<li><code>existing_method</code> is Error observations for different methods</li>
+<li><code>index_number</code> is index number of unwanted method in study</li>
+</ul>
+<p>One/two Step ahead forecasting is done with function</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#a1 &lt;- step_ahead_forecast(dataIn = datax, trainedData = 80, MethodPath = &quot;source('~/imputeTestbench/R/PSFimpute.R')&quot;, errorParameter = 3, stepSize = 1)</span>
+<span class="co">#a1</span></code></pre></div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

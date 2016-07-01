@@ -1,0 +1,113 @@
+---
+title: "PredictTestbench: Testbench for Comparison of Data Prediction Models"
+author: "Neeraj Bokde <neerajdhanraj@gmail.com>"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{PredictTestbench Vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This Document is to introduce the R package 'PredictTestbench'. It is an testing workbench for comparison of time series data prediction models/methods. It compares prediction methods with reference to RMSE, MAE or MAPE parameters. It allows to add new proposed methods to test bench and to compare with other methods. The function `prediction_append()` allows to add multiple numbers of methods to the existing methods available in test bench.
+
+Following example describs the working of this package:
+
+Consider a sample data `datax` as follows:
+```{r}
+datax <- c(1:5,1:5,1:5,1:5,1:5,1:5,1:5,1:5,1:5,1:5,1:5,1:5,1:5,1:5,1:5,1:5,1:5,1:5,1:5,1:5,1:5)
+```
+
+Import library for Package `PredictTestbench` as follows:
+```{r}
+library(PredictTestbench)
+```
+
+The function `prediction_errors()` is used to compare imputing methods with reference to RMSE, MAE or MAPE parameters. Syntax of `prediction_errors()` as shown below:
+
+`prediction_errors(dataIn, nextVal, errorParameter, MethodPath, MethodName)`
+
+
+where,
+
+- `dataIn` is imput time series for testing
+- `nextVal` is an integer to decide number of values to predict
+- `errorParameter` is type of error calculation (RMSE, MAE or MAPE)
+- `MethodPath` is location of function for the proposed imputation method
+- `MethodName` is name for function for the proposed imputation method
+
+
+At simplest form, function `prediction_errors()` can we used as:
+
+```{r}
+q <- prediction_errors(datax, nextVal = 10)
+q
+plot_predictions(q)
+```
+
+By default, this function compares two prediction methods, i.e. ARIMA and PSF <https://cran.r-project.org/package=PSF>. The `plot_predictions()` function is used to plot the comparison plots between different methods. This testbench allows to add one more data prediction method to compare with already existing methods. The only care is to be takes as, the new imputing method is to be designed in function format such that it could return predicted data as output. Suppose, following function is the desired method to add in testbench.
+
+`===============================`
+
+`inter <- function(dataIn)`
+
+`{`
+
+`  library(PSF)`
+
+`  d <- pred_for_w(dataIn, 4, 3, 10)`
+
+`  return(d)`
+
+`}`
+
+`===============================`
+
+Save this function in new R script file and save it and note its Source location similar to `"source('~/PredictTestbench/R/inter.R')"` and use `prediction_errors()` function as:
+
+```{r}
+#aa <- prediction_errors(dataIn= datax, nextVal = 10, MethodPath = "source('~/PredictTestbench/R/inter.R')", MethodName = "Proposed_Method")
+
+#aa
+#plot_predictions(aa)
+```
+
+This above code is written in commented format, since this function is dependent on other function and its location, which is not included in this package.
+
+If user wishes to add more than one imputation methods to test bench, the function `prediction_append()` is used as:
+
+```{r}
+#bb <- prediction_append(existing_method = aa, dataIn= datax, nextVal = 10, MethodPath = "source('~/imputeTestbench/R/PSFimpute.R')", MethodName = "PSFimpute")
+
+#bb
+#plot_predictions(bb)
+```
+
+where
+
+- `existing_method` is output obtained from `prediction_errors()` function
+- `dataIn` is imput time series for testing
+- `nextVal` is an integer to decide number of values to predict
+- `errorParameter` is type of error calculation (RMSE, MAE or MAPE)
+- `MethodPath` is location of function for the proposed imputation method
+- `MethodName` is name for function for the proposed imputation method
+
+
+In similar way, user is allowed to remove unwanted prediction method in testbench, if any. This is done with `prediction_remove()` function.
+
+```{r}
+# cc <- prediction_remove (existing_method = bb, index_number = 1)
+# cc
+# plot_predictions(cc)
+```
+
+where
+
+- `existing_method` is Error observations for different methods
+- `index_number` is index number of unwanted method in study
+
+One/two Step ahead forecasting is done with function
+```{r}
+#a1 <- step_ahead_forecast(dataIn = datax, trainedData = 80, MethodPath = "source('~/imputeTestbench/R/PSFimpute.R')", errorParameter = 3, stepSize = 1)
+#a1
+```
