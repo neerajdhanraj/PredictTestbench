@@ -4,6 +4,7 @@ Title: Test Bench for Comparison of Data Prediction Models
 Version: 1.0.2
 Author: Neeraj Bokde
 Maintainer: Neeraj Bokde <neerajdhanraj@gmail.com>
+URL: http://www.neerajbokde.com/
 Description: Provides a Testbench for comparison of prediction models. This
     package is inspired from 'imputeTestbench' package
     <https://cran.r-project.org/package=imputeTestbench>. It compares prediction
